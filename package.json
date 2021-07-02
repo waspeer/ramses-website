@@ -1,0 +1,14 @@
+{
+  "name": "ramses-website",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "git@github.com:waspeer/ramses-website.git",
+  "author": "Wannes Salomé <mail@wannessalome.nl>",
+  "license": "MIT",
+  "scripts": {
+    "dev": "live-server dist"
+  },
+  "devDependencies": {
+    "live-server": "^1.2.1"
+  }
+}
