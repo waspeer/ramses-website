@@ -11,6 +11,15 @@
     "astro": "astro"
   },
   "dependencies": {
-    "astro": "^2.0.6"
+    "@astrojs/solid-js": "^2.0.2",
+    "@xstate/solid": "^0.1.1",
+    "astro": "^2.0.6",
+    "destyle.css": "^4.0.0",
+    "solid-js": "^1.4.3",
+    "xstate": "^4.35.4"
+  },
+  "devDependencies": {
+    "prettier": "^2.8.3",
+    "prettier-plugin-astro": "^0.8.0"
   }
 }
