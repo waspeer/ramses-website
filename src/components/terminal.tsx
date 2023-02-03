@@ -1,17 +1,20 @@
 import { useMachine } from '@xstate/solid';
+import { camelCase, capitalCase, noCase } from 'change-case';
 import { createSignal, For, JSX, onCleanup, onMount } from 'solid-js';
 import { terminalMachine } from '../machines/terminal.machine';
+import './terminal.css';
 
 export function Terminal() {
   let commandInput: HTMLInputElement;
 
   const [state, send, service] = useMachine(terminalMachine);
   const [nextEvents, setNextEvents] = createSignal<string[]>([]);
+  const [command, setCommand] = createSignal<string>('');
 
   const handleCommand: JSX.EventHandler<HTMLFormElement, SubmitEvent> = (e) => {
     e.preventDefault();
-    send({ type: e.currentTarget.command.value });
-    e.currentTarget.reset();
+    send({ type: camelCase(command().trim()) as any });
+    setCommand('');
   };
 
   onMount(() => {
@@ -30,16 +33,28 @@ export function Terminal() {
   });
 
   return (
-    <div>
-      <pre>{state.value.toString()}</pre>
+    <div class="terminal">
+      <div class="terminal__current">Current screen: {state.value.toString()}</div>
 
-      <ul>
-        <For each={nextEvents()}>{(event) => <li>{event}</li>}</For>
-      </ul>
+      <div class="terminal__screen">
+        <ul class="terminal__next-events">
+          <For each={nextEvents()}>{(event) => <li>{noCase(event)}</li>}</For>
+        </ul>
+      </div>
 
-      {!(state.changed ?? true) && <p>Unrecognized command</p>}
-      <form onsubmit={handleCommand}>
-        <input ref={commandInput!} type="text" name="command" disabled={state.matches('booting')} />
+      <p class="terminal__error">{!(state.changed ?? true) && '⚠ Unrecognized command'}</p>
+      <form class="terminal__input" onsubmit={handleCommand}>
+        <label for="command-input">Command:</label>
+        <input
+          id="command-input"
+          ref={commandInput!}
+          type="text"
+          name="command"
+          disabled={state.matches('booting')}
+          value={command()}
+          onInput={(e) => setCommand(e.currentTarget.value)}
+        />
+        <span>{command()}</span>
       </form>
     </div>
   );
