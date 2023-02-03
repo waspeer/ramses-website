@@ -1,11 +1,12 @@
 import { useMachine } from '@xstate/solid';
-import { JSX, onCleanup, onMount } from 'solid-js';
+import { createSignal, For, JSX, onCleanup, onMount } from 'solid-js';
 import { terminalMachine } from '../machines/terminal.machine';
 
 export function Terminal() {
   let commandInput: HTMLInputElement;
 
   const [state, send, service] = useMachine(terminalMachine);
+  const [nextEvents, setNextEvents] = createSignal<string[]>([]);
 
   const handleCommand: JSX.EventHandler<HTMLFormElement, SubmitEvent> = (e) => {
     e.preventDefault();
@@ -15,10 +16,15 @@ export function Terminal() {
 
   onMount(() => {
     const focus = () => commandInput.focus();
+    const subscription = service.subscribe((state) => {
+      setNextEvents(state.nextEvents.filter((event) => !event.startsWith('xstate.')));
+      focus();
+    });
+
     commandInput.addEventListener('blur', focus);
-    focus();
 
     onCleanup(() => {
+      subscription.unsubscribe();
       commandInput.removeEventListener('blur', focus);
     });
   });
@@ -27,10 +33,13 @@ export function Terminal() {
     <div>
       <pre>{state.value.toString()}</pre>
 
-      {(!state.changed ?? false) && <p>Unrecognized command</p>}
+      <ul>
+        <For each={nextEvents()}>{(event) => <li>{event}</li>}</For>
+      </ul>
 
+      {!(state.changed ?? true) && <p>Unrecognized command</p>}
       <form onsubmit={handleCommand}>
-        <input ref={commandInput!} type="text" name="command" />
+        <input ref={commandInput!} type="text" name="command" disabled={state.matches('booting')} />
       </form>
     </div>
   );
