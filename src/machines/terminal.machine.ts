@@ -19,7 +19,7 @@ export const terminalMachine = createMachine({
   states: {
     booting: {
       after: {
-        1000: 'idle',
+        5000: 'idle',
       },
     },
     idle: {
