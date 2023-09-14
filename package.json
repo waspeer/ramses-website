@@ -1,28 +1,7 @@
 {
-  "name": "@example/minimal",
+  "name": "ramsesboomboom",
   "type": "module",
-  "version": "0.0.1",
   "private": true,
-  "scripts": {
-    "dev": "astro dev",
-    "start": "astro dev",
-    "build": "astro build",
-    "preview": "astro preview",
-    "astro": "astro"
-  },
-  "dependencies": {
-    "@astrojs/solid-js": "^2.0.2",
-    "@fontsource/press-start-2p": "^4.5.11",
-    "@xstate/solid": "^0.1.1",
-    "astro": "^2.0.6",
-    "change-case": "^4.1.2",
-    "destyle.css": "^4.0.0",
-    "open-props": "^1.5.5",
-    "postcss-jit-props": "^1.0.9",
-    "postcss-nesting": "^11.1.0",
-    "solid-js": "^1.4.3",
-    "xstate": "^4.35.4"
-  },
   "devDependencies": {
     "prettier": "^2.8.3",
     "prettier-plugin-astro": "^0.8.0",
