@@ -1,0 +1,6 @@
+{
+  "extends": ["@waspeer/eslint-config"],
+  "env": {
+    "browser": true
+  }
+}

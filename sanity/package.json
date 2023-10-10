@@ -1,0 +1,33 @@
+{
+  "name": "@ramsesboomboom/sanity",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "build": "sanity build",
+    "deploy": "sanity deploy",
+    "deploy-graphql": "sanity graphql deploy",
+    "dev": "sanity dev",
+    "start": "sanity start"
+  },
+  "dependencies": {
+    "@ariakit/react": "^0.3.2",
+    "@icon-park/react": "^1.4.2",
+    "@iconify/react": "^4.1.1",
+    "@sanity-typed/types": "^5.7.6",
+    "@sanity/ui": "^1.8.2",
+    "@sanity/vision": "^3.16.4",
+    "match-sorter": "^6.3.1",
+    "mem": "^9.0.2",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-icons": "^4.11.0",
+    "react-is": "^18.2.0",
+    "sanity": "^3.15",
+    "styled-components": "^5.3.9"
+  },
+  "devDependencies": {
+    "@types/react": "^18.0.25",
+    "@types/styled-components": "^5.1.26",
+    "typescript": "^5.1.6"
+  }
+}

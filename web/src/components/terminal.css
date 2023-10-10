@@ -11,114 +11,12 @@ body > main {
 }
 
 .terminal {
-  display: grid;
-  grid-template-rows: 1fr;
-  grid-template-columns: 1fr;
   background-color: #000;
   width: 100%;
-  max-width: 80vw;
-  min-height: 80vh;
+  max-width: min(70ch, max(80vw, 60ch));
+  height: 100%;
+  max-height: max(80vh, 40 * var(--character-size));
   color: white;
   font-family: 'Press Start 2P', monospace;
   text-transform: uppercase;
-}
-
-.terminal__boot {
-  position: relative;
-}
-
-.terminal__boot-cropped {
-  position: absolute;
-  top: 50%;
-  left: 0;
-  transform: translateY(-50%);
-  width: 100%;
-  height: var(--cropped-height);
-  overflow: hidden;
-}
-
-.terminal__boot-title {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  animation: blink 1s var(--ease-out-3) infinite;
-  font-size: calc(var(--character-size) * 3);
-}
-
-.terminal__boot-figlet {
-  position: absolute;
-  top: calc(var(--x-position) * (var(--character-size)));
-  top: 0;
-  left: 50%;
-  transform: translate(-50%, calc(var(--x-position) * var(--character-size)));
-  margin-top: -0.5em;
-  line-height: 2;
-  font-family: inherit;
-  letter-spacing: 1em;
-}
-
-.terminal__os {
-  display: grid;
-  grid-template-rows: auto 1fr auto auto;
-  padding: var(--size-8);
-}
-
-.terminal__screen {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-}
-
-.terminal__error {
-  min-height: 1.2em;
-  min-height: 1lh;
-}
-
-.terminal__next-events li::before {
-  margin-right: var(--size-2);
-  content: '>';
-}
-
-.terminal__input {
-  display: flex;
-  position: relative;
-  min-height: 1.2em;
-  min-height: 1lh;
-
-  & input {
-    position: absolute;
-    left: -100vw;
-  }
-
-  & span {
-    --char-width: 0.5em;
-
-    animation: caretBlink 1s step-end infinite;
-    border-right: 3px solid transparent;
-    padding-inline-end: calc(var(--trailing-spaces) * var(--char-width));
-
-    @supports (width: 1ch) {
-      --char-width: 1ch;
-    }
-  }
-}
-
-@keyframes caretBlink {
-  50% {
-    border-right-color: white;
-  }
-}
-
-@keyframes blink {
-  0%,
-  49%,
-  100% {
-    opacity: 1;
-  }
-
-  50%,
-  99% {
-    opacity: 0;
-  }
 }

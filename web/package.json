@@ -10,16 +10,27 @@
     "astro": "astro"
   },
   "dependencies": {
+    "@astrojs/netlify": "^3.0.2",
     "@astrojs/solid-js": "^2.0.2",
     "@fontsource/press-start-2p": "^4.5.11",
-    "@xstate/solid": "^0.1.1",
+    "@portabletext/solid": "^1.0.2",
+    "@portabletext/to-html": "^2.0.4",
     "astro": "^2.0.6",
     "change-case": "^4.1.2",
+    "date-fns": "^2.30.0",
     "destyle.css": "^4.0.0",
+    "howler": "^2.2.4",
     "open-props": "^1.5.5",
+    "picosanity": "^4.1.1",
     "postcss-jit-props": "^1.0.9",
     "postcss-nesting": "^11.1.0",
     "solid-js": "^1.4.3",
-    "xstate": "^4.35.4"
+    "ts-pattern": "^5.0.5",
+    "znv": "^0.4.0",
+    "zod": "^3.22.2"
+  },
+  "devDependencies": {
+    "@types/howler": "^2.2.9",
+    "sanity": "^3.15"
   }
 }

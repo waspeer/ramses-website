@@ -1,0 +1,47 @@
+.boot-screen {
+  position: relative;
+  height: 100%;
+}
+
+.boot-screen__inner {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  transform: translateY(-50%);
+  width: 100%;
+  height: var(--cropped-height);
+  overflow: hidden;
+}
+
+.boot-screen__title {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  animation: blink 1s var(--ease-out-3) infinite;
+  font-size: calc(var(--character-size) * 3);
+}
+
+.boot-screen__figlet {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translate(-50%, calc(var(--y-position) * var(--character-size)));
+  margin-top: -0.5em;
+  line-height: 2;
+  font-family: inherit;
+  letter-spacing: 1em;
+}
+
+@keyframes blink {
+  0%,
+  49%,
+  100% {
+    opacity: 1;
+  }
+
+  50%,
+  99% {
+    opacity: 0;
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "extends": "../.eslintrc",
+  "overrides": [
+    {
+      "files": ["*.tsx"],
+      "extends": ["plugin:solid/recommended", "plugin:jsx-a11y/recommended", "prettier"],
+      "rules": {
+        "react/prop-types": "off"
+      }
+    }
+  ]
+}
