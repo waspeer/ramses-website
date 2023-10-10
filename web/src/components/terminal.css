@@ -1,0 +1,22 @@
+main,
+body {
+  height: 100vh;
+  height: 100dvh;
+}
+
+body > main {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.terminal {
+  background-color: #000;
+  width: 100%;
+  max-width: min(70ch, max(80vw, 60ch));
+  height: 100%;
+  max-height: max(80vh, 40 * var(--character-size));
+  color: white;
+  font-family: 'Press Start 2P', monospace;
+  text-transform: uppercase;
+}

@@ -1,0 +1,84 @@
+.os {
+  display: flex;
+  flex-direction: column;
+  gap: var(--size-4);
+  padding: var(--size-8);
+  height: 100%;
+}
+
+.os__screen {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  overflow-y: scroll;
+  scrollbar-color: white transparent;
+  scrollbar-width: thin;
+  line-height: 1.5;
+  overflow-wrap: break-word;
+
+  &::-webkit-scrollbar {
+    width: 12px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    border-radius: 0;
+    background-color: white;
+  }
+
+  & ul {
+    display: flex;
+    column-gap: var(--size-4);
+    flex-wrap: wrap;
+  }
+
+  & a:link {
+    text-decoration: underline;
+  }
+}
+
+.os__screen-inner {
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+  max-height: 100%;
+}
+
+.os__error {
+  min-height: 1.2em;
+  min-height: 1lh;
+}
+
+.os__available-commands li::before {
+  margin-right: var(--size-2);
+  content: '>';
+}
+
+.os__input {
+  display: flex;
+  position: relative;
+  min-height: 1.2em;
+  min-height: 1lh;
+
+  & input {
+    position: absolute;
+    left: -100vw;
+  }
+
+  & span {
+    --char-width: 0.5em;
+
+    animation: caretBlink 1s step-end infinite;
+    border-right: 3px solid transparent;
+    padding-inline-end: calc(var(--trailing-spaces) * var(--char-width));
+
+    @supports (width: 1ch) {
+      --char-width: 1ch;
+    }
+  }
+}
+
+@keyframes caretBlink {
+  50% {
+    border-right-color: white;
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "extends": "../.eslintrc",
+  "overrides": [
+    {
+      "files": ["*.tsx"],
+      "extends": ["plugin:solid/recommended", "plugin:jsx-a11y/recommended", "prettier"],
+      "rules": {
+        "jsx-a11y/label-has-associated-control": "off"
+      }
+    },
+    {
+      "files": ["*.astro"],
+      "extends": ["@waspeer/eslint-config/astro"]
+    }
+  ]
+}

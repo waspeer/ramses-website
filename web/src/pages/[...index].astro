@@ -1,0 +1,14 @@
+---
+import { Terminal } from '../components/terminal';
+import Layout from '../layouts/layout.astro';
+import { fetchData, Screen } from '../lib/data';
+
+const data = await fetchData();
+const path = Astro.url.pathname;
+---
+
+<Layout>
+  <main>
+    {data && <Terminal client:load data={data} initialPath={path} />}
+  </main>
+</Layout>
