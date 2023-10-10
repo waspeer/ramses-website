@@ -210,15 +210,21 @@ function parseData(data: Awaited<ReturnType<typeof fetchSanityData>>) {
 export async function fetchData() {
   const newLastModified = await sanity.fetch<string | null>(
     lastModified
-      ? /* groq */ `*[!(_type match 'system.*') && _updatedAt > $lastModified] | order(_updatedAt desc)[0]._updatedAt`
+      ? /* groq */ `*[!(_type match 'system.*') && _updatedAt >= $lastModified] | order(_updatedAt desc)[0]._updatedAt`
       : /* groq */ `*[!(_type match 'system.*')] | order(_updatedAt desc)[0]._updatedAt`,
     { lastModified },
     { perspective: 'published' },
   );
 
   if (newLastModified !== lastModified) {
+    console.log('DATA: cache miss');
+    console.log('> lastModified', lastModified);
+    console.log('> newLastModified', newLastModified);
+
     lastModified = newLastModified;
     data = await fetchSanityData().then(parseData);
+  } else {
+    console.log('DATA: cache hit');
   }
 
   return data;
