@@ -29,5 +29,6 @@
     "@types/react": "^18.0.25",
     "@types/styled-components": "^5.1.26",
     "typescript": "^5.1.6"
-  }
+  },
+  "packageManager": "pnpm@8.8.0"
 }
