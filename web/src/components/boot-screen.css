@@ -16,10 +16,12 @@
 .boot-screen__title {
   position: absolute;
   top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  left: 0;
+  transform: translateY(-50%);
   animation: blink 1s var(--ease-out-3) infinite;
+  width: 100%;
   font-size: calc(var(--character-size) * 3);
+  text-align: center;
 }
 
 .boot-screen__figlet {

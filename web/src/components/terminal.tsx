@@ -18,7 +18,7 @@ export function Terminal(props: TerminalProps) {
   onMount(() => {
     setTimeout(() => {
       setBootState('booted');
-    }, 2000);
+    }, 2100);
   });
 
   return (

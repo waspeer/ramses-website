@@ -36,7 +36,7 @@ export function BootScreen() {
   onMount(() => {
     const animationInterval = setInterval(() => {
       setFrame((frame) => frame + 1);
-    }, 20);
+    }, 30);
 
     return () => {
       clearTimeout(animationInterval);
@@ -91,7 +91,11 @@ export function BootScreen() {
     >
       <div class="boot-screen__inner">
         <pre class="boot-screen__figlet">{bootFiglet}</pre>
-        <h1 class="boot-screen__title">RAMSES</h1>
+        <h1 class="boot-screen__title">
+          RAMSES
+          <wbr />
+          BOOMBOOM
+        </h1>
       </div>
     </div>
   );
