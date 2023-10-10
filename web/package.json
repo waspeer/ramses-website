@@ -11,27 +11,28 @@
   },
   "dependencies": {
     "@astrojs/netlify": "^3.0.2",
-    "@astrojs/solid-js": "^2.0.2",
-    "@fontsource/press-start-2p": "^4.5.11",
+    "@astrojs/solid-js": "^3.0.2",
+    "@fontsource/press-start-2p": "^5.0.15",
     "@portabletext/solid": "^1.0.2",
-    "@portabletext/to-html": "^2.0.4",
-    "astro": "^2.0.6",
-    "change-case": "^4.1.2",
+    "@portabletext/to-html": "^2.0.5",
+    "astro": "^3.2.4",
+    "change-case": "^5.0.2",
     "date-fns": "^2.30.0",
     "destyle.css": "^4.0.0",
     "howler": "^2.2.4",
-    "open-props": "^1.5.5",
+    "open-props": "^1.6.5",
     "picosanity": "^4.1.1",
     "postcss-jit-props": "^1.0.9",
-    "postcss-nesting": "^11.1.0",
-    "solid-js": "^1.4.3",
+    "postcss-nesting": "^12.0.1",
+    "solid-js": "^1.8.0",
     "ts-pattern": "^5.0.5",
     "znv": "^0.4.0",
-    "zod": "^3.22.2"
+    "zod": "^3.22.4"
   },
   "devDependencies": {
+    "@astrojs/check": "^0.2.0",
     "@types/howler": "^2.2.9",
-    "sanity": "^3.15"
+    "sanity": "^3.18.0"
   },
   "packageManager": "pnpm@8.8.0"
 }
