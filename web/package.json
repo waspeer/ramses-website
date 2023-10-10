@@ -1,13 +1,13 @@
 {
   "name": "@ramsesboomboom/web",
-  "type": "module",
   "private": true,
+  "type": "module",
   "scripts": {
-    "dev": "astro dev",
-    "start": "astro dev",
+    "astro": "astro",
     "build": "astro build",
+    "dev": "astro dev",
     "preview": "astro preview",
-    "astro": "astro"
+    "start": "astro dev"
   },
   "dependencies": {
     "@astrojs/netlify": "^3.0.2",
@@ -32,5 +32,6 @@
   "devDependencies": {
     "@types/howler": "^2.2.9",
     "sanity": "^3.15"
-  }
+  },
+  "packageManager": "pnpm@8.8.0"
 }
