@@ -1,7 +1,7 @@
 ---
 import { Terminal } from '../components/terminal';
 import Layout from '../layouts/layout.astro';
-import { fetchData, Screen } from '../lib/data';
+import { fetchData } from '../lib/data';
 
 const data = await fetchData();
 const path = Astro.url.pathname;

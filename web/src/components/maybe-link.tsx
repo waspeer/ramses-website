@@ -11,7 +11,7 @@ export function MaybeLink(props: MaybeLinkProps) {
     <>
       <Show when={props.url}>
         <a
-          href={props.url}
+          href={props.url!}
           target={props.blank ? '_blank' : ''}
           rel={props.blank ? 'noopener noreferrer' : ''}
         >
