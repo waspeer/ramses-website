@@ -1,6 +1,6 @@
 import { camelCase, noCase } from 'change-case';
 import { Howl } from 'howler';
-import { For, Show, createMemo, createSignal, onCleanup, onMount } from 'solid-js';
+import { For, Show, createMemo, createSignal, onCleanup, onMount, type Setter } from 'solid-js';
 import { match } from 'ts-pattern';
 
 import type { Data, Screen } from '../lib/data';
@@ -130,7 +130,7 @@ export function OS(props: TerminalOSProps) {
 
 interface CommandInputProps {
   value: string;
-  onInput: (command: string) => void;
+  onInput: Setter<string>;
   onSubmit: (command: string) => void;
 }
 
@@ -141,18 +141,17 @@ function CommandInput(props: CommandInputProps) {
   // to properly align the cursor.
   const trailingSpaces = createMemo(() => props.value.length - props.value.trimEnd().length);
 
-  // Always keep the input focused
+  const focusInput = () => {
+    commandInput.focus();
+  };
+
+  // Focus the input when the user presses a key
   onMount(() => {
-    const focus = () => setTimeout(() => commandInput.focus(), 0);
-
-    commandInput.addEventListener('blur', focus);
-    document.addEventListener('focus', focus);
-
-    focus();
+    document.addEventListener('keydown', focusInput);
+    focusInput();
 
     onCleanup(() => {
-      commandInput.removeEventListener('blur', focus);
-      document.removeEventListener('focus', focus);
+      document.removeEventListener('keydown', focusInput);
     });
   });
 
@@ -164,6 +163,8 @@ function CommandInput(props: CommandInputProps) {
         e.preventDefault();
         props.onSubmit(props.value);
       }}
+      onClick={focusInput}
+      role="presentation"
     >
       <label for="command-input">Command:</label>
       <input
