@@ -1,6 +1,15 @@
 import { camelCase, noCase } from 'change-case';
 import { Howl } from 'howler';
-import { For, Show, createMemo, createSignal, onCleanup, onMount, type Setter } from 'solid-js';
+import {
+  For,
+  Show,
+  createEffect,
+  createMemo,
+  createSignal,
+  onCleanup,
+  onMount,
+  type Setter,
+} from 'solid-js';
 import { match } from 'ts-pattern';
 
 import type { Data, Screen } from '../lib/data';
@@ -13,55 +22,28 @@ import { ScreenTextCommands } from './screen-text-commands';
 
 import './os.css';
 
+// =========== //
+// TERMINAL OS //
+// =========== //
+
 interface TerminalOSProps {
   data: Data;
   initialPath: string;
 }
 
-function createPathState(initialPath: string) {
-  const path = typeof window !== 'undefined' ? window.location.pathname : initialPath;
-  const initialScreenName = path === '/' ? null : path.slice(1);
-
-  const [screenName, setScreenName] = createSignal<string | null>(initialScreenName);
-
-  function updatePath(screenName: string | null) {
-    setScreenName(screenName);
-    window.history.pushState({}, '', screenName ? `/${screenName}` : '/');
-  }
-
-  onMount(() => {
-    const syncPath = () => {
-      setScreenName(window.location.pathname.slice(1) || null);
-    };
-
-    window.addEventListener('popstate', syncPath);
-
-    return () => {
-      window.removeEventListener('popstate', syncPath);
-    };
-  });
-
-  return [screenName, updatePath] as const;
-}
-
 export function OS(props: TerminalOSProps) {
-  const [screenName, setScreenName] = createPathState(props.initialPath);
-  const [currentScreen, setCurrentScreen] = createSignal<Screen | 'home' | 'not-found'>(
-    screenName()
-      ? // eslint-disable-next-line solid/reactivity
-        props.data.find((screen) => screen.target === screenName()) ?? 'not-found'
-      : 'home',
-  );
+  const { currentScreen, sendCommandToRouter, goHome } = createRouter(props);
   const [command, setCommand] = createSignal<string>('');
   const [error, setError] = createSignal<'none' | 'command'>('none');
 
+  const homeCommands = createMemo(() =>
+    props.data
+      .filter((screen) => !screen.hidden)
+      .map((screen) => screen.commands[0]!)
+      .concat('synare'),
+  );
   const availableCommands = createMemo(() =>
-    typeof currentScreen() === 'string'
-      ? props.data
-          .filter((screen) => !screen.hidden)
-          .map((event) => event.commands[0]!)
-          .concat('synare')
-      : ['back'],
+    typeof currentScreen() === 'string' ? homeCommands() : ['back'],
   );
 
   const synare = new Howl({ src: ['/synare.mp3'] });
@@ -77,22 +59,13 @@ export function OS(props: TerminalOSProps) {
     }
 
     if (camelCaseCommand === 'back') {
-      setScreenName(null);
-      setCurrentScreen('home');
+      goHome();
       setError('none');
       return;
     }
 
-    const targetScreen = props.data.find((event) => event.commands.includes(camelCaseCommand));
-
-    if (targetScreen) {
-      setScreenName(targetScreen.target);
-      setCurrentScreen(targetScreen);
-      setError('none');
-      return;
-    }
-
-    setError('command');
+    const commandWasAccepted = sendCommandToRouter(camelCaseCommand);
+    setError(commandWasAccepted ? 'none' : 'command');
   };
 
   return (
@@ -145,6 +118,12 @@ function CommandInput(props: CommandInputProps) {
     commandInput.focus();
   };
 
+  const handleSubmit = (e: Event) => {
+    e.preventDefault();
+    props.onSubmit(props.value);
+    commandInput.blur();
+  };
+
   // Focus the input when the user presses a key
   onMount(() => {
     document.addEventListener('keydown', focusInput);
@@ -159,10 +138,7 @@ function CommandInput(props: CommandInputProps) {
     <form
       class="os__input"
       style={{ '--trailing-spaces': trailingSpaces() }}
-      onSubmit={(e) => {
-        e.preventDefault();
-        props.onSubmit(props.value);
-      }}
+      onSubmit={handleSubmit}
       onClick={focusInput}
       role="presentation"
     >
@@ -179,4 +155,79 @@ function CommandInput(props: CommandInputProps) {
       <span>{props.value}</span>
     </form>
   );
+}
+
+// ====== //
+// ROUTER //
+// ====== //
+
+interface RouterProps {
+  data: Data;
+  initialPath: string;
+}
+
+function createRouter(props: RouterProps) {
+  const commandToScreen = createMemo(
+    () =>
+      new Map(props.data.flatMap((screen) => screen.commands.map((command) => [command, screen]))),
+  );
+  const targetToScreen = createMemo(
+    () => new Map(props.data.map((screen) => [screen.target, screen])),
+  );
+
+  const getScreenFromPath = (path: string) => {
+    const target = path.replace(/^\//, '');
+    return target === '' ? 'home' : targetToScreen().get(target) ?? 'not-found';
+  };
+
+  const [currentScreen, setCurrentScreen] = createSignal<'home' | 'not-found' | Screen>(
+    // eslint-disable-next-line solid/reactivity
+    getScreenFromPath(props.initialPath),
+  );
+
+  createEffect(() => {
+    const screen = currentScreen();
+
+    match(screen)
+      .with('not-found', () => null)
+      .with('home', () => {
+        if (window.location.pathname !== '/') {
+          window.history.pushState({}, '', '/');
+        }
+      })
+      .otherwise((screen) => {
+        const path = `/${screen.target}`;
+        if (window.location.pathname !== path) {
+          window.history.pushState({}, '', path);
+        }
+      });
+  });
+
+  const sendCommandToRouter = (command: string) => {
+    const target = commandToScreen().get(command);
+    target && setCurrentScreen(target);
+    return !!target;
+  };
+
+  const goHome = () => {
+    setCurrentScreen('home');
+  };
+
+  onMount(() => {
+    const syncPath = () => {
+      setCurrentScreen(getScreenFromPath(window.location.pathname));
+    };
+
+    window.addEventListener('popstate', syncPath);
+
+    return () => {
+      window.removeEventListener('popstate', syncPath);
+    };
+  });
+
+  return {
+    currentScreen,
+    sendCommandToRouter,
+    goHome,
+  };
 }
