@@ -40,7 +40,7 @@ export function OS(props: TerminalOSProps) {
     props.data
       .filter((screen) => !screen.hidden)
       .map((screen) => screen.commands[0]!)
-      .concat('synare'),
+      .concat('synare me'),
   );
   const availableCommands = createMemo(() =>
     typeof currentScreen() === 'string' ? homeCommands() : ['back'],
@@ -53,7 +53,7 @@ export function OS(props: TerminalOSProps) {
 
     const camelCaseCommand = camelCase(command);
 
-    if (camelCaseCommand === 'synare') {
+    if (['synare', 'synareMe'].includes(camelCaseCommand)) {
       synare.play();
       return;
     }
