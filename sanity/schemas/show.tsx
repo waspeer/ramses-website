@@ -6,17 +6,17 @@ export const Show = defineType({
   title: 'Show',
   type: 'document',
   icon: Headset,
-  validation: (Rule) =>
-    Rule.custom((fields) => {
-      const link = typeof fields?.link === 'string' ? fields.link : '';
-      const linkText = typeof fields?.linkText === 'string' ? fields.linkText : '';
+  // validation: (Rule) =>
+  //   Rule.custom((fields) => {
+  //     const link = typeof fields?.link === 'string' ? fields.link : '';
+  //     const linkText = typeof fields?.linkText === 'string' ? fields.linkText : '';
 
-      if (link.length > 0 && linkText.length === 0) {
-        return 'A link text must be added when adding a link';
-      }
+  //     if (link.length > 0 && linkText.length === 0) {
+  //       return 'A link text must be added when adding a link';
+  //     }
 
-      return true;
-    }),
+  //     return true;
+  //   }),
   fields: [
     defineField({
       name: 'title',
