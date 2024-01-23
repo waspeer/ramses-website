@@ -47,6 +47,7 @@ export function OS(props: TerminalOSProps) {
   );
 
   const synare = new Howl({ src: ['/synare.mp3'] });
+  const tanztanz = new Howl({ src: ['/tanztanz.mp3'] });
 
   const handleCommand = (command: string) => {
     setCommand('');
@@ -55,6 +56,11 @@ export function OS(props: TerminalOSProps) {
 
     if (['synare', 'synareMe'].includes(camelCaseCommand)) {
       synare.play();
+      return;
+    }
+
+    if (['ramsestanztanz', 'tanztanz', 'tanzgemeinshaft'].includes(camelCaseCommand)) {
+      tanztanz.play();
       return;
     }
 
