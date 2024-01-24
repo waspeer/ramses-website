@@ -20,6 +20,14 @@ export interface TextCommandScreen {
   data: TextCommandResult;
 }
 
+export interface AudioCommandScreen {
+  _kind: 'audioCommand';
+  commands: string[];
+  hidden: boolean;
+  target: string;
+  assetUrl: string;
+}
+
 export type ScreenByName = {
   [ScreenName in keyof SanityData]: ScreenName extends 'textCommands'
     ? never
@@ -34,7 +42,7 @@ export type ScreenByName = {
 
 export type TemplateScreen = ScreenByName[keyof ScreenByName];
 
-export type Screen = TemplateScreen | TextCommandScreen;
+export type Screen = TemplateScreen | TextCommandScreen | AudioCommandScreen;
 
 export type Data = Screen[];
 
@@ -45,6 +53,7 @@ const COMMANDS: Record<keyof SanityData, string[]> = {
   music: ['music', 'releases'],
   contact: ['contact'],
   textCommands: [],
+  audioCommands: [],
 };
 
 // Sanity data fragment for link data
@@ -154,6 +163,24 @@ async function fetchSanityData() {
         }
       }
     `),
+
+    audioCommands: sanity.fetch<{
+      commands: {
+        title: string;
+        command: string;
+        hidden?: boolean;
+        assetUrl: string;
+      }[];
+    }>(/* groq */ `
+      *[_id == 'audioCommands'][0] {
+        commands[] {
+          title,
+          command,
+          hidden,
+          'assetUrl': file.asset->url,
+        }
+      }
+    `),
   });
 }
 
@@ -187,6 +214,19 @@ function parseData(data: Awaited<ReturnType<typeof fetchSanityData>>) {
           hidden: !!hidden,
           target: camelCase(title),
           data: rest,
+        });
+      }
+    } else if (screenName === 'audioCommands') {
+      for (const audioCommand of data.audioCommands?.commands ?? []) {
+        const { command: commandList, title, hidden, assetUrl } = audioCommand;
+        const commands = commandList.split(/,\s*/g).map((c) => camelCase(c));
+
+        screens.push({
+          _kind: 'audioCommand',
+          commands,
+          hidden: !!hidden,
+          target: camelCase(title),
+          assetUrl,
         });
       }
     } else {

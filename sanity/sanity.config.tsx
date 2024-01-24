@@ -25,6 +25,10 @@ export default defineConfig({
               .id('textCommands')
               .schemaType('textCommands')
               .title('Text Commands'),
+            S.documentListItem()
+              .id('audioCommands')
+              .schemaType('audioCommands')
+              .title('Audio Commands'),
           ]),
     }),
     visionTool(),

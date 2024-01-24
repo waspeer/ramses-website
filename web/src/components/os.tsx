@@ -37,32 +37,16 @@ export function OS(props: TerminalOSProps) {
   const [error, setError] = createSignal<'none' | 'command'>('none');
 
   const homeCommands = createMemo(() =>
-    props.data
-      .filter((screen) => !screen.hidden)
-      .map((screen) => screen.commands[0]!)
-      .concat('synare me'),
+    props.data.filter((screen) => !screen.hidden).map((screen) => screen.commands[0]!),
   );
   const availableCommands = createMemo(() =>
     typeof currentScreen() === 'string' ? homeCommands() : ['back'],
   );
 
-  const synare = new Howl({ src: ['/synare.mp3'] });
-  const tanztanz = new Howl({ src: ['/tanztanz.mp3'] });
-
   const handleCommand = (command: string) => {
     setCommand('');
 
     const camelCaseCommand = camelCase(command);
-
-    if (['synare', 'synareMe'].includes(camelCaseCommand)) {
-      synare.play();
-      return;
-    }
-
-    if (['ramsestanztanz', 'tanztanz', 'tanzgemeinshaft'].includes(camelCaseCommand)) {
-      tanztanz.play();
-      return;
-    }
 
     if (camelCaseCommand === 'back') {
       goHome();
@@ -87,9 +71,15 @@ export function OS(props: TerminalOSProps) {
                 .with({ target: 'contact' }, (screen) => <ScreenContact data={screen.data} />)
                 .with({ target: 'music' }, (screen) => <ScreenMusic data={screen.data} />)
                 .with({ target: 'shows' }, (screen) => <ScreenShows data={screen.data} />)
+                .with({ target: 'audioCommands' }, () => {
+                  throw new Error('No screen for audio commands');
+                })
                 .exhaustive(),
             )
             .with({ _kind: 'textCommand' }, (screen) => <ScreenTextCommands data={screen.data} />)
+            .with({ _kind: 'audioCommand' }, () => {
+              throw new Error('No screen for audio commands');
+            })
             .exhaustive()}
         </div>
       </div>
@@ -173,6 +163,8 @@ interface RouterProps {
 }
 
 function createRouter(props: RouterProps) {
+  const audioFiles = new Map<string, Howl>();
+
   const commandToScreen = createMemo(
     () =>
       new Map(props.data.flatMap((screen) => screen.commands.map((command) => [command, screen]))),
@@ -211,7 +203,21 @@ function createRouter(props: RouterProps) {
 
   const sendCommandToRouter = (command: string) => {
     const target = commandToScreen().get(command);
-    target && setCurrentScreen(target);
+
+    if (target) {
+      if (target._kind === 'audioCommand') {
+        let audioFile = audioFiles.get(target.assetUrl);
+
+        if (!audioFile) {
+          audioFile = new Howl({ src: [target.assetUrl] });
+          audioFiles.set(target.assetUrl, audioFile);
+        }
+
+        audioFile.play();
+      } else {
+        setCurrentScreen(target);
+      }
+    }
     return !!target;
   };
 
@@ -226,6 +232,7 @@ function createRouter(props: RouterProps) {
 
     window.addEventListener('popstate', syncPath);
 
+    // eslint-disable-next-line solid/reactivity
     return () => {
       window.removeEventListener('popstate', syncPath);
     };
