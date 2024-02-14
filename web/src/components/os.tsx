@@ -32,7 +32,8 @@ interface TerminalOSProps {
 }
 
 export function OS(props: TerminalOSProps) {
-  const { currentScreen, sendCommandToRouter, goHome } = createRouter(props);
+  const { currentScreen, sendCommandToRouter, triggeredAudioFile, goHome } = createRouter(props);
+
   const [command, setCommand] = createSignal<string>('');
   const [error, setError] = createSignal<'none' | 'command'>('none');
 
@@ -40,8 +41,34 @@ export function OS(props: TerminalOSProps) {
     props.data.filter((screen) => !screen.hidden).map((screen) => screen.commands[0]!),
   );
   const availableCommands = createMemo(() =>
+    // currentScreen is a string in the case of the home or not-found screens
     typeof currentScreen() === 'string' ? homeCommands() : ['back'],
   );
+
+  // Play triggered audio files
+  const audioFiles = new Map<string, Howl>();
+  const [isPlaying, setIsPlaying] = createSignal(false);
+
+  createEffect(() => {
+    const assetUrl = triggeredAudioFile()?.url;
+
+    if (assetUrl) {
+      let audioFile = audioFiles.get(assetUrl);
+
+      if (!audioFile) {
+        audioFile = new Howl({
+          src: [assetUrl],
+          onend: () => setIsPlaying(false),
+          onplay: () => setIsPlaying(true),
+          onstop: () => setIsPlaying(false),
+          onpause: () => setIsPlaying(false),
+        });
+        audioFiles.set(assetUrl, audioFile);
+      }
+
+      audioFile.play();
+    }
+  });
 
   const handleCommand = (command: string) => {
     setCommand('');
@@ -61,6 +88,17 @@ export function OS(props: TerminalOSProps) {
   return (
     <div class="os">
       <div class="os__screen">
+        <Show when={isPlaying()}>
+          <div class="os__sound-indicator">
+            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24">
+              <path
+                fill="currentColor"
+                d="M11 2h2v20h-2v-2H9v-2h2V6H9V4h2zM7 8V6h2v2zm0 8H3V8h4v2H5v4h2zm0 0v2h2v-2zm10-6h-2v4h2zm2-2h2v8h-2zm0 8v2h-4v-2zm0-10v2h-4V6z"
+              />
+            </svg>
+          </div>
+        </Show>
+
         <div class="os__screen-inner">
           {match(currentScreen())
             .with('home', () => null)
@@ -163,8 +201,6 @@ interface RouterProps {
 }
 
 function createRouter(props: RouterProps) {
-  const audioFiles = new Map<string, Howl>();
-
   const commandToScreen = createMemo(
     () =>
       new Map(props.data.flatMap((screen) => screen.commands.map((command) => [command, screen]))),
@@ -183,6 +219,9 @@ function createRouter(props: RouterProps) {
     getScreenFromPath(props.initialPath),
   );
 
+  const [triggeredAudioFile, setTriggeredAudioFile] = createSignal<{ url: string } | null>(null);
+
+  // Sync the URL with the current screen
   createEffect(() => {
     const screen = currentScreen();
 
@@ -206,14 +245,7 @@ function createRouter(props: RouterProps) {
 
     if (target) {
       if (target._kind === 'audioCommand') {
-        let audioFile = audioFiles.get(target.assetUrl);
-
-        if (!audioFile) {
-          audioFile = new Howl({ src: [target.assetUrl] });
-          audioFiles.set(target.assetUrl, audioFile);
-        }
-
-        audioFile.play();
+        setTriggeredAudioFile({ url: target.assetUrl });
       } else {
         setCurrentScreen(target);
       }
@@ -241,6 +273,7 @@ function createRouter(props: RouterProps) {
   return {
     currentScreen,
     sendCommandToRouter,
+    triggeredAudioFile,
     goHome,
   };
 }
