@@ -1,4 +1,4 @@
-import createClient from 'picosanity';
+import { createClient } from 'picosanity';
 
 import { env } from './env';
 

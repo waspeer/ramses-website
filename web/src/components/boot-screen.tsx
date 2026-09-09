@@ -28,7 +28,9 @@ ffffffffbbbbbbbb
   .replaceAll('f', '/');
 
 export function BootScreen() {
-  let bootScreen: HTMLDivElement;
+  // Assigned by Solid through the `ref` prop below.
+  // eslint-disable-next-line no-unassigned-vars
+  let bootScreen!: HTMLDivElement;
 
   // The current frame of the animation
   const [frame, setFrame] = createSignal(0);
@@ -83,7 +85,7 @@ export function BootScreen() {
   return (
     <div
       class="boot-screen"
-      ref={bootScreen!}
+      ref={bootScreen}
       style={{
         '--y-position': yPosition(),
         '--cropped-height': croppedHeight(),

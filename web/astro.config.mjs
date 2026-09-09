@@ -1,4 +1,4 @@
-import netlify from '@astrojs/netlify/functions';
+import netlify from '@astrojs/netlify';
 import solidJs from '@astrojs/solid-js';
 import { defineConfig } from 'astro/config';
 

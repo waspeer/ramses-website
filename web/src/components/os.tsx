@@ -142,7 +142,9 @@ interface CommandInputProps {
 }
 
 function CommandInput(props: CommandInputProps) {
-  let commandInput: HTMLInputElement;
+  // Assigned by Solid through the `ref` prop below.
+  // eslint-disable-next-line no-unassigned-vars
+  let commandInput!: HTMLInputElement;
 
   // The input is masked so we need to keep track of the number of trailing spaces
   // to properly align the cursor.
@@ -179,7 +181,7 @@ function CommandInput(props: CommandInputProps) {
       <label for="command-input">Command:</label>
       <input
         id="command-input"
-        ref={commandInput!}
+        ref={commandInput}
         type="text"
         name="command"
         autofocus
@@ -211,7 +213,7 @@ function createRouter(props: RouterProps) {
 
   const getScreenFromPath = (path: string) => {
     const target = path.replace(/^\//, '');
-    return target === '' ? 'home' : targetToScreen().get(target) ?? 'not-found';
+    return target === '' ? 'home' : (targetToScreen().get(target) ?? 'not-found');
   };
 
   const [currentScreen, setCurrentScreen] = createSignal<'home' | 'not-found' | Screen>(

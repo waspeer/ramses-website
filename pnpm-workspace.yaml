@@ -1,3 +1,18 @@
 packages:
   - web
   - sanity
+
+catalog:
+  vite-plus: ^0.3.0
+
+peerDependencyRules:
+  allowAny:
+    - vite
+    - vitest
+  allowedVersions:
+    vite: '*'
+    vitest: '*'
+
+onlyBuiltDependencies:
+  - esbuild
+  - sharp
